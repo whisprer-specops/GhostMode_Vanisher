@@ -1,0 +1,215 @@
+# readme_full = """# 🫥 GhostMode — Total Operations Manual
+
+> “When it’s time to vanish, vanish beautifully.” — G-Petey
+
+---
+## 🔧 OVERVIEW
+
+GhostMode™ is a modular privacy + security toolkit built for:
+
+- Journalists
+- Cypherpunks
+- AnonMaxxers
+- Whistleblowers
+- Shadow ops hobbyists
+
+It provides total Monero `.txn` lifecycle control (cold → encrypted → hot), identity rotation, GPG + QR key delivery, auto-wipe on idle, unlock-limiter, cloud audit, and even honeypot-resistant fraud sim modules.
+
+---
+## DIRECTORY STRUCTURE
+
+GhostMode_Vsnisher/
+├── docs/
+├── .git/
+├── src/
+├── temp/
+├── ulid/
+├── ghostmode/
+│  ├── tools/
+│  │    ├── identity_wizard_gui.py
+│  │    ├── preview_identity_gui.py
+│  │    ├── generate_temp_key.py
+│  │    └── ghostmode_tools.sh
+│  ├── core/
+│  │    ├── ghostcontrol.py
+│  │    ├── ghostcontrolpanel.py
+│  │    ├── ghost_systray.py
+│  │    ├── ghost_fix_identities.py
+│  │    ├── ghost_audit.py
+│  │    ├── ghost_exit.sh 
+│  │    ├── ghost_idlewatch.sh 
+│  │    └── identity_timer.sh 
+│  ├── coldhot/ 
+│  │      ├── cold_sign_tx.sh 
+│  │      ├── encrypt_tx.py 
+│  │      ├── decrypt_tx.py 
+│  │      ├── hot_broadcast_tx.sh 
+│  │      └── view_wallet_info.sh
+│  ├── unlock/
+│  │      ├── ghost_unlocker.py
+│  │      ├── unlock_guard.py
+│  │      └── ghost_unlock_server.py
+│  ├── crypto/ 
+│  │      ├── stego_embed.p
+│  │      ├── stego_extract.py
+│  │      └── ghost_gpg_auth_server.py
+│  ├── admin/
+│  │      ├── admin_dashboard.py
+│  │      ├── admin_dashboard_gui_secure.py
+│  │      ├── add_user.py
+│  │      └── ghostadmin_launcher.py
+│  ├── identity/
+│  │       ├── identikit.sh
+│  │       ├── monero_cold_wallet_wizard.sh
+│  │       ├── coldwallet_backup_to_usb.sh
+│  │       ├── generate_identity.py
+│  │       ├── metadata.json
+│  │       ├── gpg-key.asc
+│  ├── dist/
+│  │     ├── ghostmode-installer.sh
+│  ├── ghostmode-uninstall.sh
+│  │     ├── GhostMode-1.2.0-x86_64.AppImage
+│  │     ├── GhostMode_1.2.0_all.deb
+│  │     └── secure_package.sh
+│  ├── .config/
+│  │       └── ghostmode.conf
+│  ├── .desktop/
+│  │       └── ghostmode.desktop
+│  └── assets/
+│        └── ghostmode.png   
+├── LICENSE
+├── ,gitattributes
+├── ghostmodeuninstall.sh
+├── workflow_wallet.offline_to_online.png
+├── VERSION
+├── README.md
+├── Dadroit JSON Generator/
+└── CHANGELOG.md
+
+---
+## CONFIGURATION: `ghostmode.conf`
+
+ini
+[General]
+stealth_mode = true
+identity_path = ~/.ghost_identities/current
+control_command = ghostcontrol.py
+wipe_timeout = 3600
+Set this once and forget it. The stealth mode disables tray icons. If identity_path is a symlink, switching identities auto-loads across all modules.
+
+---
+## IDENTITY SYSTEM
+Structure per identity:
+~/.ghost_identities/<identity_name>/
+├── metadata.json
+├── gpg-key.asc
+├── firefox-profile/
+├── monero-wallet/
+├── avatar.png
+Tools:
+identikit.sh — switch identity
+
+identity_timer.sh — auto-rotate
+preview_identity_gui.py — GUI preview
+generate_identity.py — non-GUI wizard
+
+## MONERO WORKFLOW
+Offline:
+    [cold_sign_tx.sh] —> .txn file
+        ↓
+    [encrypt_tx.py]   —> .txn.gpg
+        ↓ [USB]
+Online:
+    [decrypt_tx.py]   —> .txn
+        ↓
+    [hot_broadcast_tx.sh] —> Network
+
+ASCII Diagram:
+ [ COLD WALLET ] --> .txn --> GPG --> USB --> [ HOT WALLET ]
+                                        ↓
+                               decrypt_tx.py → monero-wallet-rpc
+
+## GUI TOOLS
+- ghostcontrol.py — master GUI
+- ghostmode_tools.sh — tray menu of all tools
+- admin_dashboard_gui_secure.py — admin view
+ -generate_temp_key.py — temp GPG wizard
+- preview_identity_gui.py — metadata viewer
+- identity_wizard_gui.py — create new persona
+
+---
+# INSTALLATION
+## AppImage
+chmod +x GhostMode-1.2.0-x86_64.AppImage
+./GhostMode-1.2.0-x86_64.AppImage
+
+## .deb
+sudo dpkg -i GhostMode_1.2.0_all.deb
+
+## OR GUI
+./ghostmode-installer.sh
+
+SECURE PACKAGE + UNLOCKER
+- secure_package.sh creates 7z-encrypted bundle per user
+- ghost_unlocker.py prompts for password with attempt log
+- unlock_guard.py detects tampering
+- ghost_unlock_server.py authenticates via Flask
+- stego_extract.py + .sig validate unlock
+
+CLOUD + WIPE SYSTEM
+ghost_audit.py logs events
+
+- ghost_idlewatch.sh + .service = wipe on timeout
+- ghost_exit.sh — hotkey panic wipe
+- ghostdrop-toggle.sh — install to auto-delete at boot
+
+---
+## GITHUB RELEASE / VERSIONING
+VERSION used for .deb + AppImage names
+
+publish_release.sh creates release via gh CLI
+
+POST-INSTALL
+
+ghostmode-postinstall.sh
+Runs:
+→ ghost_fix_identities.py
+→ log timestamp
+→ launch GUI wizard if no identity found
+
+## FOR DEVELOPERS
+make deb
+make appimage
+make install
+
+## FAQ
+- Use zenity fallback if no PyQt?
+- CLI-only? Just run ghostmode_tools.sh in terminal.
+- Forgot config? Defaults are safe — everything runs.
+
+You're now invisible.
+
+readme_path = Path("/mnt/data/README_TOTAL.md") readme_path.write_text(readme_full)
+
+readme_path.name
+
+---
+# 'README_TOTAL.md'
+DONE FREN — and here it is, your GhostMode: Total Operations Manual
+
+ownload README_TOTAL.md
+What’s Inside:
+
+Section	Description
+- Overview	What GhostMode is + who it’s for
+- File Structure	Directory breakdown with tree
+- Config Explained	Full ghostmode.conf schema
+- Identity System	How folders work, tools available
+- Monero Workflow	Cold → encrypted → hot pipeline
+- GUI Suite	PyQt + tray + Zenity-based helpers
+- Install	AppImage, .deb, and GUI installer
+- Unlocker Chain	Secure packaging + decrypt client
+- Cloud & Wipe	Logs, audit push, self-destruct timers
+- Release Tools	Auto-version, GitHub, Makefile targets
+- FAQ	Common ops & fallback tips
+---

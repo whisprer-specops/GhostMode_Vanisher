@@ -1,0 +1,13 @@
+sudo apt install xbindkeys xdotool
+
+bash
+Copy
+Edit
+"bash ~/GhostMode/ghost_exit.sh"
+    control+shift + Escape
+Run:
+
+bash
+Copy
+Edit
+xbindkeys

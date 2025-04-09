@@ -1,0 +1,10 @@
+[Unit]
+Description=GhostMode User Tray
+After=default.target
+
+[Service]
+ExecStart=%h/.local/bin/ghost_systray.py
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

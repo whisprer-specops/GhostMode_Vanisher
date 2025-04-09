@@ -1,0 +1,25 @@
+🧊 Cold Wallet ➜ USB ➜ 🌐 Hot Wallet — Transaction Workflow
+
+1. Cold Sign (offline)
+   Run:
+     ./cold_sign_tx.sh
+   → Prompts for:
+     - Wallet name
+     - Label
+     - Recipient GPG key
+   → Exports: TXN (.txn)
+   → Encrypts: TXN.gpg
+   → Copies to USB
+
+2. Transfer USB to Online Machine
+
+3. Hot Broadcast (online)
+   Run:
+     ./hot_broadcast_tx.sh
+   → Prompts for:
+     - View-only wallet
+     - USB path
+   → Decrypts: TXN.gpg
+   → Broadcasts TXN
+
+You can use `encrypt_tx.py` and `decrypt_tx.py` manually for other workflows.

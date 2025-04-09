@@ -1,0 +1,10 @@
+[Unit]
+Description=GhostMode Self-Wipe Timer
+After=network.target
+
+[Service]
+ExecStart=%h/.local/bin/ghost_idlewatch.sh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

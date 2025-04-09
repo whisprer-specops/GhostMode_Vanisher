@@ -1,3 +1,6 @@
+# temp - the most truly junky temporay of sll files
+temp/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -10,7 +13,8 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+GhostModes_Vanisher/dev/ # speares n junk from development - not sued in actual program
+docs/ # jut my general notes to self and prep for README.md etc.
 downloads/
 eggs/
 .eggs/

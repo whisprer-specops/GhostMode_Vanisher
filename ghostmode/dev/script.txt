@@ -1,0 +1,1004 @@
+sudo apt install mat2
+
+# Nuke all metadata
+mat2 photo.jpg
+mat2 document.pdf
+mat2 --inplace *.docx
+
+
+
+
+// Inject via plugin or Puppeteer profile
+Object.defineProperty(navigator, 'userAgent', {
+  get: () => "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112 Safari/537.36"
+});
+
+
+
+
+
+
+
+sudo apt install mat2
+
+
+
+
+
+
+
+
+mat2 photo.jpg
+mat2 document.pdf
+mat2 --inplace *.docx
+
+
+
+
+
+
+
+
+import subprocess, os
+
+def nuke_metadata(path):
+    for file in os.listdir(path):
+        full_path = os.path.join(path, file)
+        if os.path.isfile(full_path):
+            subprocess.run(['mat2', '--inplace', full_path])
+
+nuke_metadata('/your/suspect/files/here')
+
+
+
+
+
+./monero-wallet-cli \
+  --generate-new-wallet ghostwallet \
+  --restore-height 3100000 \
+  --daemon-address node.moneroworld.com:18089 \
+  --trusted-daemon \
+  --log-level 0 \
+  --offline
+
+
+
+
+
+# monero-wallet config (CLI flags or .conf)
+--stagenet / --testnet (for testing)
+--daemon-address node.monerujo.app:18089
+--proxy tor,127.0.0.1:9050 (for full stealth)
+--tx-privacy-level 5 (higher = slower but more stealthy)
+--segregate-duties (offline signing, airgapped signing device)
+
+
+
+
+
+#!/bin/bash
+
+set -e
+
+echo "🔻 GHOSTMODE™: FULL OPSEC SUITE INITIATED 🔻"
+echo "Phase 1: Installing necessary tools..."
+
+# System updates and dependencies
+sudo apt update && sudo apt install -y \
+    mat2 \
+    tor \
+    torsocks \
+    proxychains4 \
+    monero-wallet-cli \
+    feather \
+    jq \
+    zenity \
+    python3-pyqt5 \
+    python3-pyqt5.qtwebengine \
+    xclip \
+    curl \
+    gpg
+
+echo "✅ All tools installed."
+
+# --------- FINGERPRINT SPOOF SETUP ---------
+
+echo "Phase 2: Launching Anti-Fingerprint Browser Setup..."
+echo "Opening Firefox with fingerprint randomizer profile..."
+
+FIREFOX_PROFILE="$HOME/.ghostfox"
+
+if [ ! -d "$FIREFOX_PROFILE" ]; then
+    mkdir -p "$FIREFOX_PROFILE"
+    cp -r ~/.mozilla/firefox/*.default-release/* "$FIREFOX_PROFILE/" 2>/dev/null || true
+    echo 'user_pref("privacy.resistFingerprinting", true);' >> "$FIREFOX_PROFILE/user.js"
+    echo 'user_pref("privacy.firstparty.isolate", true);' >> "$FIREFOX_PROFILE/user.js"
+    echo 'user_pref("webgl.disabled", true);' >> "$FIREFOX_PROFILE/user.js"
+    echo 'user_pref("media.peerconnection.enabled", false);' >> "$FIREFOX_PROFILE/user.js"
+    echo 'user_pref("privacy.trackingprotection.enabled", true);' >> "$FIREFOX_PROFILE/user.js"
+    echo 'user_pref("canvas.poisondata", true);' >> "$FIREFOX_PROFILE/user.js"
+fi
+
+firefox --no-remote -profile "$FIREFOX_PROFILE" &
+
+echo "🕶️  Fingerprint-hardened Firefox launched."
+
+# --------- METADATA REMOVAL WIZARD ---------
+
+echo "Phase 3: METADATA SCRUBBER 🔍"
+
+zenity --info --text="Please choose files to scrub of all metadata."
+
+FILES=$(zenity --file-selection --multiple --separator=" ")
+
+for FILE in $FILES; do
+    echo "🧼 Scrubbing: $FILE"
+    mat2 --inplace "$FILE"
+done
+
+echo "✅ Metadata nuked."
+
+# --------- MONERO COLD WALLET WIZARD ---------
+
+echo "Phase 4: MONERO COLD WALLET CREATION 🔐"
+WALLET_NAME=$(zenity --entry --text="Enter a name for your cold wallet:")
+WALLET_DIR="$HOME/.ghostwallets"
+
+mkdir -p "$WALLET_DIR"
+
+monero-wallet-cli \
+    --generate-new-wallet "$WALLET_DIR/$WALLET_NAME" \
+    --restore-height 3100000 \
+    --offline \
+    --log-file "$WALLET_DIR/$WALLET_NAME.log" \
+    --password "" <<< "" > /dev/null
+
+zenity --info --text="Cold wallet '$WALLET_NAME' created. Keys stored at: $WALLET_DIR"
+
+echo "✅ Cold Monero wallet setup complete."
+
+# --------- TOR CHECK ---------
+
+echo "Phase 5: Routing all traffic through Tor..."
+
+PROXYCHAINS_CONF="/etc/proxychains.conf"
+if ! grep -q "127.0.0.1 9050" $PROXYCHAINS_CONF; then
+    echo "socks5 127.0.0.1 9050" | sudo tee -a $PROXYCHAINS_CONF
+fi
+
+tor & sleep 10
+proxychains curl https://check.torproject.org
+
+echo "🧅 Tor routing verified."
+
+# --------- CLEANUP REPORT ---------
+
+echo "🧵 Summary:"
+echo "- Fingerprint-hardened browser active"
+echo "- Metadata nuked for selected files"
+echo "- Cold wallet generated in $WALLET_DIR"
+echo "- Proxychains + Tor ready for secure comms"
+
+zenity --info --text="Ghostmode Activated. You are now a ghost in the shell. 🖤"
+
+exit 0
+
+
+
+
+
+# Export view-only wallet on offline:
+monero-wallet-cli --wallet-file ghostwallet --export-transfers all ghost.txn
+
+# Transfer file via USB to online
+# Broadcast:
+monero-wallet-cli --wallet-file viewonlywallet --broadcast-tx ghost.txn
+
+
+
+
+
+👻 GHOSTMODE™: THE FULL SUITE
+╰──────╮
+ 🔁 1. Identity Rotation Manager
+ 🧠 2. AI Stylometry Obfuscator (Containerized)
+ 📡 3. Auto MAC Changer
+ 🔐 4. GPG GUI Tool (Send/Encrypt/Sign)
+ 🧅 5. OnionShare Dropzone (Anonymously Upload/Share)
+╰───────────────────────────────
+
+
+
+
+
+#!/bin/bash
+# auto-macchanger.sh — run at boot for random MAC
+IFACE="wlan0" # or eth0, change as needed
+
+sudo ifconfig $IFACE down
+sudo macchanger -r $IFACE
+sudo ifconfig $IFACE up
+
+echo "🌐 [$IFACE] MAC randomized to:"
+macchanger -s $IFACE
+
+
+
+
+@reboot /path/to/auto-macchanger.sh
+🔐 4. GPG GUI (encrypt, sign, verify) via Zenity
+bash
+Copy
+Edit
+#!/bin/bash
+# gpg_gui.sh — friendly front-end for GPG
+
+ACTION=$(zenity --list --title="GPG Tool" --column="Action" "Encrypt" "Decrypt" "Sign" "Verify")
+
+FILE=$(zenity --file-selection)
+
+case "$ACTION" in
+    Encrypt)
+        RECIPIENT=$(zenity --entry --text="Recipient GPG ID:")
+        gpg -e -r "$RECIPIENT" "$FILE"
+        zenity --info --text="File encrypted."
+        ;;
+    Decrypt)
+        gpg -d "$FILE" > "${FILE%.gpg}.decrypted"
+        zenity --info --text="File decrypted to: ${FILE%.gpg}.decrypted"
+        ;;
+    Sign)
+        gpg --armor --sign "$FILE"
+        zenity --info --text="File signed (ASCII-armored)."
+        ;;
+    Verify)
+        gpg --verify "$FILE"
+        zenity --info --text="Verification complete."
+        ;;
+esac
+
+
+
+
+#!/bin/bash
+# onionshare_drop.sh — anonymous file sharing
+
+FILE=$(zenity --file-selection --multiple)
+onionshare-cli --public "$FILE"
+
+
+
+
+or
+
+
+
+Copy
+Edit
+pip install onionshare
+
+
+
+
+
+
+sudo apt install python3 python3-pyqt5 python3-pyqt5.qtwebengine python3-pyqt5.qtsvg zenity macchanger gpg mat2 curl torsocks tor
+pip install onionshare
+
+
+
+
+
+import os
+import subprocess
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
+)
+import sys
+
+class GhostControlPanel(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("👻 GHOSTMODE™ Control Panel")
+        self.setGeometry(500, 300, 400, 400)
+
+        layout = QVBoxLayout()
+
+        layout.addWidget(QLabel("🎛️ All Ops Modules – Click To Activate"))
+
+        buttons = {
+            "📡 MAC Address Randomizer": self.randomize_mac,
+            "🧼 Metadata Nuker": self.nuke_metadata,
+            "🔐 GPG Encrypt/Sign Tool": self.launch_gpg_gui,
+            "🧅 OnionShare Dropzone": self.onionshare_upload,
+            "🪙 Monero Cold Wallet Wizard": self.monero_coldwallet,
+            "🎭 Identity Rotation Manager": self.identity_manager,
+            "🧠 AI Stylometry Jammer": self.stylometry_jammer
+        }
+
+        for label, method in buttons.items():
+            btn = QPushButton(label)
+            btn.clicked.connect(method)
+            layout.addWidget(btn)
+
+        self.setLayout(layout)
+
+    def randomize_mac(self):
+        iface = "wlan0"  # Change to your interface
+        subprocess.call(f"sudo ifconfig {iface} down", shell=True)
+        subprocess.call(f"sudo macchanger -r {iface}", shell=True)
+        subprocess.call(f"sudo ifconfig {iface} up", shell=True)
+        mac = subprocess.check_output(f"macchanger -s {iface}", shell=True).decode()
+        QMessageBox.information(self, "MAC Changed", mac)
+
+    def nuke_metadata(self):
+        subprocess.call('bash -c "zenity --file-selection --multiple --separator=\\\" \\\" | xargs -d \\\" \\\" -I{{}} mat2 --inplace {{}}"', shell=True)
+
+    def launch_gpg_gui(self):
+        subprocess.Popen(["bash", "gpg_gui.sh"])
+
+    def onionshare_upload(self):
+        subprocess.Popen(["bash", "-c", "FILE=$(zenity --file-selection --multiple); onionshare-cli --public $FILE"])
+
+    def monero_coldwallet(self):
+        subprocess.Popen(["bash", "monero_cold_wallet_wizard.sh"])
+
+    def identity_manager(self):
+        subprocess.Popen(["bash", "identikit.sh"])
+
+    def stylometry_jammer(self):
+        subprocess.Popen(["bash", "stylometry_obfuscator.sh"])
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ghost = GhostControlPanel()
+    ghost.show()
+    sys.exit(app.exec_())
+
+
+
+
+
+#!/bin/bash
+
+set -e
+
+echo "🪙 GHOSTMODE™ MONERO COLD WALLET WIZARD"
+echo "This script will create a secure offline wallet, dump seed + keys, and optionally encrypt them."
+
+read -p "Enter wallet name (no spaces): " WALLET_NAME
+WALLET_DIR="$HOME/.ghostwallets"
+mkdir -p "$WALLET_DIR"
+
+echo "🔐 Generating new cold wallet: $WALLET_NAME"
+monero-wallet-cli --generate-new-wallet "$WALLET_DIR/$WALLET_NAME" \
+    --restore-height 3100000 \
+    --offline \
+    --password "" <<< "" > /dev/null
+
+echo "✅ Wallet created offline at: $WALLET_DIR/$WALLET_NAME"
+
+# Dump the mnemonic seed
+echo "📜 Saving mnemonic seed..."
+SEED=$(monero-wallet-cli --wallet-file "$WALLET_DIR/$WALLET_NAME" --password "" --mnemonic <<< "exit" | grep -A 25 "Mnemonic seed" | tail -n +2)
+
+echo "$SEED" > "$WALLET_DIR/${WALLET_NAME}_SEED.txt"
+chmod 600 "$WALLET_DIR/${WALLET_NAME}_SEED.txt"
+echo "🧠 Mnemonic seed saved to: $WALLET_DIR/${WALLET_NAME}_SEED.txt"
+
+# Dump view/spend keys
+echo "📤 Exporting view and spend keys..."
+KEYS=$(monero-wallet-cli --wallet-file "$WALLET_DIR/$WALLET_NAME" --password "" --dump-key <<<'exit' | grep ':')
+echo "$KEYS" > "$WALLET_DIR/${WALLET_NAME}_KEYS.txt"
+chmod 600 "$WALLET_DIR/${WALLET_NAME}_KEYS.txt"
+echo "🔑 Keys saved to: $WALLET_DIR/${WALLET_NAME}_KEYS.txt"
+
+# Offer to GPG encrypt the keys
+read -p "🔐 Encrypt keys and seed with GPG? (y/n): " ENCRYPT
+if [[ $ENCRYPT == "y" ]]; then
+    gpg --symmetric --cipher-algo AES256 "$WALLET_DIR/${WALLET_NAME}_SEED.txt"
+    gpg --symmetric --cipher-algo AES256 "$WALLET_DIR/${WALLET_NAME}_KEYS.txt"
+    shred -u "$WALLET_DIR/${WALLET_NAME}_SEED.txt" "$WALLET_DIR/${WALLET_NAME}_KEYS.txt"
+    echo "🔐 Files encrypted and originals securely deleted."
+fi
+
+# Export view-only wallet for online use
+echo "🌐 Creating view-only wallet export..."
+monero-wallet-cli --wallet-file "$WALLET_DIR/$WALLET_NAME" --password "" --export-view-key --offline <<< "exit" > "$WALLET_DIR/${WALLET_NAME}_view.key"
+
+echo "🧾 View-only export saved to: $WALLET_DIR/${WALLET_NAME}_view.key"
+
+# Offer QR code seed printout (optional)
+if command -v qrencode >/dev/null; then
+    read -p "🖨️ Generate QR of seed for airgap printout? (y/n): " QR
+    if [[ $QR == "y" ]]; then
+        echo "$SEED" | qrencode -o "$WALLET_DIR/${WALLET_NAME}_seed_qr.png"
+        echo "🖼️ QR saved to: $WALLET_DIR/${WALLET_NAME}_seed_qr.png"
+    fi
+fi
+
+echo
+
+
+
+
+
+def monero_coldwallet(self):
+    subprocess.Popen(["bash", "monero_cold_wallet_wizard.sh"])
+
+
+
+
+#!/bin/bash
+
+WALLET_DIR="$HOME/.ghostwallets"
+WALLET=$(zenity --file-selection --title="Select View-Only Wallet" --filename="$WALLET_DIR/")
+
+zenity --info --text="Reading wallet info..."
+
+INFO=$(monero-wallet-cli --wallet-file "$WALLET" --password "" --offline --log-file /dev/null <<< "address\nbalance\nexit")
+
+zenity --text-info --title="View-Only Wallet Info" --width=600 --height=400 --filename=<(echo "$INFO")
+
+
+
+
+#!/bin/bash
+
+WALLET_DIR="$HOME/.ghostwallets"
+
+echo "Looking for USB drives..."
+USB_MOUNT=$(lsblk -o MOUNTPOINT,RM | awk '$2=="1"{print $1}' | grep -v '^$' | head -n 1)
+
+if [[ -z "$USB_MOUNT" ]]; then
+    zenity --error --text="❌ No USB device detected."
+    exit 1
+fi
+
+zenity --info --text="📁 Backing up to: $USB_MOUNT"
+
+rsync -a "$WALLET_DIR/" "$USB_MOUNT/GhostVaultBackup/"
+sync
+
+zenity --info --text="✅ Backup complete."
+
+
+
+
+
+#!/bin/bash
+
+WALLET=$(zenity --file-selection --title="Select Cold Wallet")
+OUT=$(zenity --file-selection --title="Select Unsigned TX File")
+
+monero-wallet-cli --wallet-file "$WALLET" --password "" --offline <<< "sign_transfer $OUT\nexit"
+
+
+
+#!/bin/bash
+
+SIGNED=$(zenity --file-selection --title="Select Signed TX File")
+monero-wallet-cli --wallet-file viewonlywallet --password "" <<< "submit_transfer $SIGNED\nexit"
+
+
+
+
+
+"🧾 View Wallet Info": self.view_wallet_info,
+"💽 Backup Wallet to USB": self.backup_wallet,
+"✍️ Sign TX (Cold)": self.sign_tx,
+"📡 Broadcast TX (Hot)": self.broadcast_tx,
+
+
+
+
+def view_wallet_info(self):
+    subprocess.Popen(["bash", "view_wallet_info.sh"])
+
+def backup_wallet(self):
+    subprocess.Popen(["bash", "coldwallet_backup_to_usb.sh"])
+
+def sign_tx(self):
+    subprocess.Popen(["bash", "cold_sign_tx.sh"])
+
+def broadcast_tx(self):
+    subprocess.Popen(["bash", "hot_broadcast_tx.sh"])
+
+
+
+
+sudo apt install docker python3-pip zenity
+pip install openai transformers
+
+
+
+
+
+#!/bin/bash
+
+set -e
+
+echo "📄 Stylometry Obfuscator – GhostWriter Mode"
+
+INPUT=$(zenity --file-selection --title="Select a .txt file to anonymize")
+
+if [[ -z "$INPUT" ]]; then
+    zenity --error --text="No file selected."
+    exit 1
+fi
+
+OUTPUT="${INPUT%.txt}_obfuscated.txt"
+
+# Create container (if not exists)
+if ! docker ps -a --format '{{.Names}}' | grep -q ghostwriter_ai; then
+    echo "🛠️ Creating Docker container..."
+    docker run -d --name ghostwriter_ai --rm -v "$HOME:/data" python:3 bash -c "pip install transformers torch && tail -f /dev/null"
+fi
+
+# Copy file into container
+docker cp "$INPUT" ghostwriter_ai:/data/input.txt
+
+# Obfuscate via AI
+docker exec ghostwriter_ai python3 -c "
+from transformers import pipeline
+import random
+
+style_variants = [
+    'professional', 'colloquial', 'descriptive', 'minimalist',
+    'passive voice', 'active voice', 'punchy', 'verbose', 'legalese'
+]
+
+with open('/data/input.txt', 'r') as f:
+    original = f.read()
+
+tone = random.choice(style_variants)
+rephrased = pipeline('text2text-generation', model='Vamsi/T5_Paraphrase_Paws')(
+    f'Rewrite this in a {tone} style: {original[:1000]}', max_length=512, do_sample=True, num_return_sequences=1
+)[0]['generated_text']
+
+with open('/data/output.txt', 'w') as f:
+    f.write(rephrased)
+"
+
+# Pull output
+docker cp ghostwriter_ai:/data/output.txt "$OUTPUT"
+
+zenity --info --text="Obfuscated version saved as: $OUTPUT"
+
+
+
+
+
+
+#!/bin/bash
+
+set -e
+
+IDENTITY_DIR="$HOME/.ghost_identities"
+
+echo "🎭 IDENTITY ROTATOR"
+
+# Step 1: Select identity
+IDENTITY=$(zenity --list --title="Choose an Identity" --column="Identities" $(ls "$IDENTITY_DIR"))
+
+if [ -z "$IDENTITY" ]; then
+    zenity --error --text="No identity selected!"
+    exit 1
+fi
+
+PROFILE_PATH="$IDENTITY_DIR/$IDENTITY"
+
+# Step 2: Load browser profile
+echo "🧠 Loading browser profile for: $IDENTITY"
+firefox --no-remote -profile "$PROFILE_PATH/firefox-profile" &
+
+# Step 3: Import GPG key
+if [[ -f "$PROFILE_PATH/gpg-key.asc" ]]; then
+    echo "🔐 Importing GPG key..."
+    gpg --import "$PROFILE_PATH/gpg-key.asc"
+fi
+
+# Step 4: Prepare Monero wallet path
+if [[ -d "$PROFILE_PATH/monero-wallet" ]]; then
+    echo "💰 Setting up Monero wallet path..."
+    export MONERO_WALLET_DIR="$PROFILE_PATH/monero-wallet"
+fi
+
+# Step 5: Show metadata (alias, handle, burner email)
+if [[ -f "$PROFILE_PATH/metadata.json" ]]; then
+    zenity --text-info --title="Identity Metadata" --filename="$PROFILE_PATH/metadata.json"
+else
+    zenity --info --text="✅ $IDENTITY loaded. No metadata file found."
+fi
+
+# Step 6: Display avatar (if available)
+if [[ -f "$PROFILE_PATH/avatar.png" ]]; then
+    feh --title "👤 $IDENTITY" "$PROFILE_PATH/avatar.png" &
+fi
+
+echo "✅ Identity '$IDENTITY' fully loaded."
+💡 BONUS: Metadata example metadata.json
+json
+Copy
+Edit
+{
+  "alias": "Deadbeat Donnie",
+  "burner_email": "donnie243@cock.li",
+  "monero_address": "4A1a...yTx",
+  "persona_notes": "Journalist alt for whistleblow ops."
+}
+
+
+
+
+
+
+cp -r ~/.ghost_identities/template ~/.ghost_identities/astro-vixen
+# Then edit the `metadata.json`, swap avatar, import GPG, etc.
+
+
+
+
+
+"🎭 Identity Rotation Manager": self.identity_manager
+
+
+
+
+def identity_manager(self):
+    subprocess.Popen(["bash", "identikit.sh"])
+
+
+
+
+
+#!/bin/bash
+
+INTERVAL_MINUTES=15  # 💡 Change as needed
+IDENTITY_DIR="$HOME/.ghost_identities"
+CURRENT_ID=""
+
+echo "⏱️ GHOSTMODE™ Identity Timer — rotating every $INTERVAL_MINUTES minutes."
+
+while true; do
+    # Pick random identity
+    IDENTITY=$(ls "$IDENTITY_DIR" | shuf -n1)
+
+    if [[ "$IDENTITY" == "$CURRENT_ID" ]]; then
+        echo "🔁 Same identity, skipping..."
+        continue
+    fi
+
+    CURRENT_ID="$IDENTITY"
+    PROFILE_PATH="$IDENTITY_DIR/$IDENTITY"
+
+    echo "🎭 Loading new identity: $CURRENT_ID"
+
+    # Kill previous Firefox
+    pkill firefox 2>/dev/null || true
+    sleep 1
+
+    # Launch browser with identity profile
+    firefox --no-remote -profile "$PROFILE_PATH/firefox-profile" &
+
+    # Import GPG key
+    if [[ -f "$PROFILE_PATH/gpg-key.asc" ]]; then
+        gpg --import "$PROFILE_PATH/gpg-key.asc"
+    fi
+
+    # Set Monero wallet context (shell-wide var)
+    export MONERO_WALLET_DIR="$PROFILE_PATH/monero-wallet"
+
+    # Show metadata
+    echo "🔍 Identity Info:"
+    jq . "$PROFILE_PATH/metadata.json"
+
+    # Display avatar
+    if command -v feh >/dev/null && [[ -f "$PROFILE_PATH/avatar.png" ]]; then
+        feh --title "$CURRENT_ID" "$PROFILE_PATH/avatar.png" &
+    fi
+
+    echo "⏳ Sleeping for $INTERVAL_MINUTES minutes..."
+    sleep $((INTERVAL_MINUTES * 60))
+
+
+
+
+IFACE="wlan0"
+sudo ifconfig $IFACE down
+sudo macchanger -r $IFACE
+sudo ifconfig $IFACE up
+
+
+
+
+def identity_timer(self):
+    subprocess.Popen(["bash", "identity_timer.sh"])
+
+
+
+
+#!/bin/bash
+
+set -e
+echo "💀 Initiating SmoothFade Exit Protocol..."
+
+IDENTITY_DIR="$HOME/.ghost_identities"
+CURRENT_ID=$(pgrep -a firefox | grep -oP '(?<=--profile )[^\s]+')
+
+# Kill browser + GUI leaks
+echo "🧯 Closing browsers..."
+pkill firefox
+pkill feh
+
+# MAC reset
+IFACE="wlan0"
+sudo ifconfig $IFACE down
+sudo macchanger -p $IFACE
+sudo ifconfig $IFACE up
+echo "🔁 MAC address restored to original."
+
+# Shred GPG imports
+echo "🧨 Wiping GPG keyrings..."
+gpg --batch --yes --delete-secret-and-public-keys $(gpg --list-keys --with-colons | grep '^pub' | cut -d':' -f10)
+
+# Secure delete wallet temp
+if [[ -n "$MONERO_WALLET_DIR" ]]; then
+  echo "💸 Erasing Monero wallet cache..."
+  shred -u "$MONERO_WALLET_DIR/"*.keys "$MONERO_WALLET_DIR/"*.log 2>/dev/null || true
+fi
+
+# Clean any leftover metadata from recent identities
+find "$IDENTITY_DIR" -type f \( -name "*.log" -o -name "*.bak" \) -exec shred -u {} \;
+
+# (Optional) Fake usage logs
+echo "🌀 Faking user activity logs..."
+echo "$(date): Ran LibreOffice and edited .odt" >> ~/.bash_history
+
+# Lock or logout
+zenity --question --text="SmoothFade completed. Lock screen?"
+if [[ $? -eq 0 ]]; then
+    gnome-screensaver-command -l || loginctl lock-session
+else
+    gnome-session-quit --logout --no-prompt || pkill -u "$USER"
+fi
+🧩 PHASE 2: Trigger by Hotkey
+Option A: Bind with xdotool + sxhkd
+~/.config/sxhkd/sxhkdrc
+
+
+
+
+
+
+super + shift + x
+    bash ~/GhostMode/ghost_exit.sh
+
+
+
+
+sudo apt install xbindkeys xdotool
+~/.xbindkeysrc
+
+
+
+
+"bash ~/GhostMode/ghost_exit.sh"
+    control+shift + Escape
+
+
+
+
+xbindkeys
+
+
+
+#######
+
+
+
+sudo apt install xprintidle
+
+
+
+
+# Duration before auto-wipe (minutes)
+TIMEOUT_MINUTES=$1
+TIMEOUT_MS=$(( TIMEOUT_MINUTES * 60 * 1000 ))
+
+echo "⏳ GhostIdleWatch enabled – timeout after $TIMEOUT_MINUTES minutes"
+
+while true; do
+    IDLE_TIME=$(xprintidle)
+    if [ "$IDLE_TIME" -gt "$TIMEOUT_MS" ]; then
+        echo "💀 Inactivity threshold reached. Triggering GhostExit..."
+        bash ~/GhostMode/ghost_exit.sh
+        break
+    fi
+    sleep 30
+done
+
+
+
+
+
+chmod +x ghost_idlewatch.sh
+
+
+
+
+def enable_idle_wipe(self):
+    from PyQt5.QtWidgets import QInputDialog
+
+    timeout, ok = QInputDialog.getInt(
+        self,
+        "Idle Timeout",
+        "Enter inactivity timeout in minutes:",
+        min=1,
+        max=720
+    )
+
+    if ok:
+        subprocess.Popen([
+            "bash", "ghost_idlewatch.sh", str(timeout)
+        ])
+
+
+
+
+sudo apt install xprintidle zenity util-linux lsof
+
+
+
+
+
+
+sudo apt install secure-delete
+
+
+
+
+TIMEOUT_MINUTES=$1
+TIMEOUT_MS=$(( TIMEOUT_MINUTES * 60 * 1000 ))
+PASSWORD="ghostbypass123" # Change this to your secret abort password
+
+echo "⏳ GhostIdleWatch running... timeout=$TIMEOUT_MINUTES mins"
+
+while true; do
+    IDLE_TIME=$(xprintidle)
+
+    if [ "$IDLE_TIME" -gt "$TIMEOUT_MS" ]; then
+        echo "⏱️ Timeout reached. Displaying countdown GUI..."
+
+        zenity --entry --title="🔐 Are You Still There?" \
+          --text="Inactivity threshold reached.\nEnter abort password to cancel wipe:\n(You have 60 seconds...)" \
+          --timeout 60 > /tmp/ghost_input.txt
+
+        INPUT=$(cat /tmp/ghost_input.txt 2>/dev/null || echo "")
+
+        if [[ "$INPUT" == "$PASSWORD" ]]; then
+            echo "✅ Wipe aborted. User confirmed presence."
+            continue
+        else
+            echo "💀 Triggering full wipe via ghost_exit.sh"
+            bash ~/GhostMode/ghost_exit.sh &
+            break
+        fi
+    fi
+
+    sleep 20
+done
+
+
+
+
+# Wipe mounted USBs
+echo "💣 Wiping all mounted removable devices..."
+
+for MNT in $(lsblk -o MOUNTPOINT,RM | awk '$2=="1"{print $1}' | grep -v '^$'); do
+    echo "🧹 Wiping USB at $MNT"
+    sudo lsof +D "$MNT" 2>/dev/null | awk '{print $2}' | xargs -r sudo kill -9
+    sudo umount "$MNT" || true
+    sudo sfill -v "$MNT"  # secure-delete tool required
+done
+
+
+
+
+
+
+echo "❄️ Zeroing RAM and swap..."
+sudo swapoff -a && sudo swapon -a
+sudo sync && sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
+
+
+
+
+
+sudo sswap -v /dev/disk/by-uuid/$(blkid -o value -s UUID | head -n 1) 2>/dev/null || true
+
+
+
+
+mkdir -p ~/.config/systemd/user/
+Create ~/.config/systemd/user/ghostwatch.service
+
+
+
+[Unit]
+Description=GhostMode Self-Wipe Timer
+After=graphical.target
+
+[Service]
+ExecStart=/home/YOU/GhostMode/ghost_idlewatch.sh 30
+Restart=always
+
+[Install]
+WantedBy=default.target
+
+
+
+
+systemctl --user daemon-reexec
+systemctl --user enable --now ghostwatch.service
+
+
+
+
+# Wipe mounted USBs (removable devices)
+for MNT in $(lsblk -o MOUNTPOINT,RM | awk '$2=="1"{print $1}' | grep -v '^$'); do
+    echo "Wiping USB at $MNT..."
+    sudo lsof +D "$MNT" 2>/dev/null | awk '{print $2}' | xargs -r sudo kill -9
+    sudo umount "$MNT" || true
+    sudo sfill -v "$MNT"
+done
+
+
+
+
+
+exec python3 "$APPDIR/usr/bin/ghostcontrol.py"
+
+
+
+
+# Clone standalone builder
+git clone https://github.com/indygreg/python-build-standalone.git
+cd python-build-standalone
+
+# Build Linux x86_64 version
+./build-linux.py --output-dir python-dist
+
+
+
+
+
+
+
+export PYTHONHOME="$APPDIR/usr/python"
+export PATH="$PYTHONHOME/bin:$PATH"
+
+exec python3 "$APPDIR/usr/bin/ghostcontrol.py"
+
+
+
+
+mkdir -p GhostMode.AppDir/usr/python/
+tar -xzf cpython-3.10.16+20250317-x86_64-unknown-linux-gnu-install_only.tar.gz -C GhostMode.AppDir/usr/python/ --strip-components=1
+--strip-components=1 removes the outer folder and puts binaries/libs right in place.
+
+
+
+
+#!/bin/bash
+export PYTHONHOME="$APPDIR/usr/python"
+export PATH="$PYTHONHOME/bin:$PATH"
+
+exec python3 "$APPDIR/usr/bin/ghostcontrol.py"
+
+
+
+
+
+

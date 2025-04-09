@@ -1,0 +1,46 @@
+from pathlib import Path
+
+# Recreate after state reset
+
+# SYSTEMD service file for GhostMode
+systemd_service = """[Unit]
+Description=GhostMode Tray & Tools Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/ghost_systray.py
+Restart=on-failure
+User=%i
+
+[Install]
+WantedBy=default.target
+"""
+
+# Boot-time one-shot GhostDrop service
+ghostdrop_service = """[Unit]
+Description=GhostDrop: Boot-Time GhostMode Self-Destruct
+DefaultDependencies=no
+After=local-fs.target
+Before=sysinit.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ghostmode-uninstall.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+# Paths to export
+service_path = Path("/mnt/data/ghostmode.service")
+ghostdrop_path = Path("/mnt/data/ghostdrop-init.service")
+
+# Write both
+service_path.write_text(systemd_service)
+ghostdrop_path.write_text(ghostdrop_service)
+
+service_path, ghostdrop_path
+Result
+(PosixPath('/mnt/data/ghostmode.service'),
+ PosixPath('/mnt/data/ghostdrop-init.service'))

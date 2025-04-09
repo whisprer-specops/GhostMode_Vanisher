@@ -1,0 +1,10 @@
+Package: ghostmode
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: zenity, lsof, util-linux, gpg, python3, monero-wallet-cli
+Maintainer: GhostOps <ghost@ops.local>
+Description: GhostMode Toolkit - Secure Monero Airgap Tools
+ A self-contained system for cold-signing and hot-broadcasting Monero transactions.
+ Includes encryption, USB handoff, and PyQt GUI launcher.

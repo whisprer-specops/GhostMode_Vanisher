@@ -1,0 +1,83 @@
+Always show details
+
+Copy
+from pathlib import Path
+
+# Create ghostmode --help banner
+ghostmode_help = """\
+GhostMode 🫥  |  Monero Airgap Ops Toolkit
+-----------------------------------------
+Command-line tools for cold signing, GPG encryption, USB handoff, and hot wallet broadcasting.
+
+USAGE:
+  ghostcontrol.py               Launch PyQt GUI interface
+  ghost_systray.py              Launch system tray icon
+  ghostmode-check.sh            Run preflight checks
+  ghostmode-installer.sh        GUI installer wizard
+
+COLD WALLET OPERATIONS:
+  cold_sign_tx.sh               Export + encrypt .txn from offline wallet
+  encrypt_tx.py <file> <key>    GPG-encrypt a file manually
+
+HOT WALLET OPERATIONS:
+  hot_broadcast_tx.sh           Decrypt and broadcast .txn.gpg
+  decrypt_tx.py <file.gpg>      GPG-decrypt a file manually
+
+GPG GUI:
+  gpg_gui.sh                    Simple GPG key and encrypt UI
+
+IDENTITY TOOLS:
+  identikit.sh                  Rotate browser/user fingerprint aliases
+  identity_timer.sh             Auto-reset identities on interval
+  stylometry_obfuscator.sh      Rewrite text to defeat stylometry
+
+GHOST EXIT:
+  ghost_exit.sh                 Emergency exit + cache/USB zeroing
+  ghost_idlewatch.sh            Trigger auto-wipe after inactivity
+
+FLAGS:
+  --help                        Show this message
+  --stealth                     Hide system tray icon (if supported)
+  --version                     Print GhostMode version
+
+CONFIG:
+  ~/.config/ghostmode/ghostmode.conf
+"""
+
+help_banner_path = Path("/mnt/data/ghostmode_help.txt")
+help_banner_path.write_text(ghostmode_help)
+
+# Create example .txn workflow doc
+txn_workflow = """\
+🧊 Cold Wallet ➜ USB ➜ 🌐 Hot Wallet — Transaction Workflow
+
+1. Cold Sign (offline)
+   Run:
+     ./cold_sign_tx.sh
+   → Prompts for:
+     - Wallet name
+     - Label
+     - Recipient GPG key
+   → Exports: TXN (.txn)
+   → Encrypts: TXN.gpg
+   → Copies to USB
+
+2. Transfer USB to Online Machine
+
+3. Hot Broadcast (online)
+   Run:
+     ./hot_broadcast_tx.sh
+   → Prompts for:
+     - View-only wallet
+     - USB path
+   → Decrypts: TXN.gpg
+   → Broadcasts TXN
+
+You can use `encrypt_tx.py` and `decrypt_tx.py` manually for other workflows.
+"""
+
+txn_workflow_path = Path("/mnt/data/txn_workflow.txt")
+txn_workflow_path.write_text(txn_workflow)
+
+help_banner_path, txn_workflow_path
+Result
