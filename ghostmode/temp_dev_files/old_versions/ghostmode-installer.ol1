@@ -1,0 +1,97 @@
+#!/bin/bash
+set -euo pipefail
+
+INSTALL_DIR="/usr/local/bin"
+ICON_PATH="/usr/share/icons/hicolor/256x256/apps"
+DESKTOP_ENTRY="/usr/share/applications/ghostmode.desktop"
+CONFIG_DIR="$HOME/.config/ghostmode"
+CONFIG_FILE="$CONFIG_DIR/ghostmode.conf"
+INSTALL_LOG="/var/log/ghostmode-install.log"
+
+APPIMAGE_FILE="build/GhostMode-1.0-x86_64.AppImage"
+DEB_FILE="build/GhostMode_1.0_all.deb"
+
+REQUIRED_PKGS=(zenity gpg mat2 tor proxychains4 monero-wallet-cli feather jq python3-pyqt5 python3-pyqt5.qtwebengine curl xclip)
+
+declare -A FALLBACK_URLS
+FALLBACK_URLS["monero-wallet-cli"]="https://downloads.getmonero.org/cli/monero-linux-x64-v0.18.3.1.tar.bz2"
+FALLBACK_URLS["feather"]="https://featherwallet.org/files/Feather-2.6.4-x86_64.AppImage"
+
+declare -A FALLBACK_INSTALL_CMDS
+FALLBACK_INSTALL_CMDS["monero-wallet-cli"]='
+TMP="/tmp/toolcli"; mkdir -p "$TMP" && cd "$TMP"
+curl -LO "{URL}"
+tar -xf *.tar.bz2
+for dir in monero-*; do
+  cd "$dir"
+  install -m755 monero-wallet-cli /usr/local/bin/
+  break
+done
+
+'
+
+FALLBACK_INSTALL_CMDS["feather"]='
+curl -Lo /opt/Feather.AppImage "{URL}"
+chmod +x /opt/Feather.AppImage
+ln -sf /opt/Feather.AppImage /usr/local/bin/feather
+'
+
+LOG="/tmp/ghostmode-installer.log"
+exec > >(tee -a "$LOG") 2>&1
+
+if [[ "$EUID" -ne 0 ]]; then
+  echo "[ERROR] Please run as root (sudo ./ghostmode-installer.sh)"
+  exit 1
+fi
+
+echo "[INFO] GHOSTMODE INSTALLER STARTED"
+echo "[INFO] Updating APT sources..."
+timeout 30s apt-get update || echo "[WARN] apt-get update may have timed out"
+
+for pkg in "${REQUIRED_PKGS[@]}"; do
+    echo "[CHECK] $pkg..."
+    if dpkg -s "$pkg" &>/dev/null; then
+        echo "[OK] Found via dpkg."
+    else
+        echo "[APT] Attempting APT install for $pkg"
+        if ! apt-get install -y "$pkg"; then
+            echo "[WARN] APT install failed for $pkg"
+            if [[ -n "${FALLBACK_URLS[$pkg]:-}" && -n "${FALLBACK_INSTALL_CMDS[$pkg]:-}" ]]; then
+                echo "[FALLBACK] Installing $pkg from known source..."
+                FALLBACK_SCRIPT="${FALLBACK_INSTALL_CMDS[$pkg]//\{URL\}/${FALLBACK_URLS[$pkg]}}"
+                bash -c "$FALLBACK_SCRIPT"
+                echo "[SUCCESS] Fallback install complete for $pkg"
+            else
+                echo "[FAIL] No fallback defined for $pkg"
+                exit 1
+            fi
+        fi
+    fi
+done
+
+echo "[INFO] Installing GhostMode core..."
+install -Dm755 ghost_unlocker.py "$INSTALL_DIR/ghost_unlocker.py"
+install -Dm755 ghostadmin_launcher.py "$INSTALL_DIR/ghostadmin_launcher.py"
+install -Dm755 GhostControl.py "$INSTALL_DIR/ghostcontrol.py"
+install -Dm755 ghost_exit.sh "$INSTALL_DIR/ghost_exit.sh"
+install -Dm755 ghostdrop-toggle.sh "$INSTALL_DIR/ghostdrop-toggle.sh"
+install -Dm755 ghostmode-uninstall.sh "$INSTALL_DIR/ghostmode-uninstall.sh"
+install -Dm755 ghost_idlewatch.sh "$INSTALL_DIR/ghost_idlewatch.sh"
+
+mkdir -p "$CONFIG_DIR"
+[[ ! -f "$CONFIG_FILE" ]] && cp ghostmode.conf "$CONFIG_FILE" && echo "[INFO] Default config created."
+
+install -Dm644 ghostmode.png "$ICON_PATH/ghostmode.png"
+install -Dm644 ghostmode.desktop "$DESKTOP_ENTRY"
+
+mkdir -p /etc/systemd/system/
+cp ghostmode.service /etc/systemd/system/
+systemctl enable ghostmode.service
+systemctl start ghostmode.service
+
+[[ -f "$APPIMAGE_FILE" ]] && install -Dm755 "$APPIMAGE_FILE" /opt/GhostMode.AppImage
+[[ -f "$DEB_FILE" ]] && cp "$DEB_FILE" /opt/GhostMode.deb
+
+echo "Installed on $(date)" > "$INSTALL_LOG"
+
+echo "[SUCCESS] GhostMode installation complete."

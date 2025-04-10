@@ -48,6 +48,20 @@ class GhostTrayApp:
     gen_temp_action = QAction("🔐 Generate Temp GPG Key")
     gen_temp_action.triggered.connect(lambda: subprocess.Popen(["/usr/local/bin/tools/generate_temp_key.sh"]))
 
+    menu = QMenu()
+
+    start_service_action = QAction("Start GhostMode Service")
+    stop_service_action = QAction("Stop GhostMode Service")
+
+    start_service_action.triggered.connect(lambda: subprocess.run(["sc", "start", "GhostModeService"]))
+    stop_service_action.triggered.connect(lambda: subprocess.run(["sc", "stop", "GhostModeService"]))
+
+menu.addAction(start_service_action)
+menu.addAction(stop_service_action)
+
+
+
+
     tray_menu.addAction(gen_temp_action)
 
     def load_config(self):

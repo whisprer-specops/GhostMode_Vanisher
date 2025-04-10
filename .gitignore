@@ -1,5 +1,6 @@
 # temp - the most truly junky temporay of sll files
 temp/
+*.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

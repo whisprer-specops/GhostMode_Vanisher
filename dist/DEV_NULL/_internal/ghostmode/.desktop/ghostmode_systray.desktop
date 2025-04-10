@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=GhostMode Systray
+GenericName=Ghost Systray Launcher
+Comment=Stealth-mode system tray for GhostMode
+Exec=python3 /home/$USER/ghostmode/systray/ghost_systray.py --stealth
+Icon=security-high
+Terminal=false
+Type=Application
+Categories=Utility;Tray;Security;
+StartupNotify=false

@@ -1,0 +1,97 @@
+import sys
+import subprocess
+import platform
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
+from PyQt5.QtGui import QIcon
+
+class GhostControlPanel(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("GHOSTMODE™ Control Panel")
+        self.setGeometry(100, 100, 400, 600)
+
+        layout = QVBoxLayout()
+        label = QLabel("All Ops Modules – Click To Activate")
+        layout.addWidget(label)
+
+        # Add your modules here:
+        self.add_button(layout, "🛠️ Identity Generator", self.run_identity_generator)
+        self.add_button(layout, "🌀 Identity Switcher GUI", self.run_identity_switcher)
+        self.add_button(layout, "🌐 Admin Dashboard (Remote)", self.run_admin_dashboard)
+        self.add_button(layout, "🔐 GPG Login Prompt", self.run_gpg_login)
+        self.add_button(layout, "📤 Upload Audit Log", self.run_upload_log)
+        self.add_button(layout, "🧠 Stylometry Obfuscator", self.run_stylometry_obfuscator)
+        self.add_button(layout, "🔍 Show Unlock QR Code", self.run_qr)
+        self.add_button(layout, "👤 MAC Address Randomizer", self.run_mac)
+        self.add_button(layout, "💎 Metadata Nuker", self.run_nuker)
+        self.add_button(layout, "🔐 GPG Encrypt/Sign Tool", self.run_gpg_sign)
+        self.add_button(layout, "🧅 OnionShare Dropzone", self.run_onionshare)
+        self.add_button(layout, "☑️ Monero Cold Wallet Wizard", self.run_monero)
+        self.add_button(layout, "🌀 Identity Rotation Manager", self.run_identity_manager)
+        self.add_button(layout, "🧠 AI Stylometry Jammer", self.run_ai_jammer)
+
+        self.setLayout(layout)
+        self.show()
+
+    def add_button(self, layout, label, callback):
+        button = QPushButton(label)
+        button.clicked.connect(callback)
+        layout.addWidget(button)
+
+    def run_subprocess(self, linux_cmd, windows_cmd):
+        system = platform.system()
+        try:
+            if system == "Windows":
+                subprocess.Popen(windows_cmd, shell=True)
+            else:
+                subprocess.Popen(linux_cmd)
+        except Exception as e:
+            print(f"[ERROR] Failed to launch subprocess: {e}")
+
+    # Each function below uses run_subprocess to dispatch OS-specific commands
+    def run_identity_generator(self):
+        self.run_subprocess(["bash", "scripts/identity_generator.sh"], ["scripts\\identity_generator.bat"])
+
+    def run_identity_switcher(self):
+        self.run_subprocess(["bash", "scripts/identity_switcher.sh"], ["scripts\\identity_switcher.bat"])
+
+    def run_admin_dashboard(self):
+        self.run_subprocess(["bash", "admin/admin_dashboard.sh"], ["admin\\admin_dashboard.bat"])
+
+    def run_gpg_login(self):
+        self.run_subprocess(["bash", "scripts/gpg_login.sh"], ["scripts\\gpg_login.bat"])
+
+    def run_upload_log(self):
+        self.run_subprocess(["bash", "scripts/upload_audit_log.sh"], ["scripts\\upload_audit_log.bat"])
+
+    def run_stylometry_obfuscator(self):
+        self.run_subprocess(["python3", "tools/stylometry_obfuscator.py"], ["python", "tools\\stylometry_obfuscator.py"])
+
+    def run_qr(self):
+        self.run_subprocess(["python3", "tools/show_qr.py"], ["python", "tools\\show_qr.py"])
+
+    def run_mac(self):
+        self.run_subprocess(["bash", "tools/randomize_mac.sh"], ["tools\\randomize_mac.bat"])
+
+    def run_nuker(self):
+        self.run_subprocess(["bash", "tools/metadata_nuker.sh"], ["tools\\metadata_nuker.bat"])
+
+    def run_gpg_sign(self):
+        self.run_subprocess(["bash", "tools/gpg_sign_tool.sh"], ["tools\\gpg_sign_tool.bat"])
+
+    def run_onionshare(self):
+        self.run_subprocess(["bash", "tools/onionshare_drop.sh"], ["tools\\onionshare_drop.bat"])
+
+    def run_monero(self):
+        self.run_subprocess(["bash", "tools/monero_cold_wallet.sh"], ["tools\\monero_cold_wallet.bat"])
+
+    def run_identity_manager(self):
+        self.run_subprocess(["bash", "tools/identity_rotation.sh"], ["tools\\identity_rotation.bat"])
+
+    def run_ai_jammer(self):
+        self.run_subprocess(["python3", "tools/ai_stylometry_jammer.py"], ["python", "tools\\ai_stylometry_jammer.py"])
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = GhostControlPanel()
+    sys.exit(app.exec_())

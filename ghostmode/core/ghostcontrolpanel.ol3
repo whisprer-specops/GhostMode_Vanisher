@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+import os
+import sys
+import subprocess
+import platform
+from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction
+from PyQt5.QtGui import QIcon
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = os.path.join(BASE_DIR, "scripts")
+ICON_PATH = os.path.join(BASE_DIR, "../share/icons/ghostmode_256x256.ico")
+
+def run_script(script_name):
+    script_path = os.path.join(SCRIPT_DIR, script_name)
+    is_windows = platform.system() == "Windows"
+
+    if is_windows:
+        if script_path.endswith(".py"):
+            subprocess.Popen(["python", script_path], shell=True)
+        elif script_path.endswith(".bat"):
+            subprocess.Popen(["cmd.exe", "/c", script_path], shell=True)
+        elif script_path.endswith(".sh"):
+            subprocess.Popen(["bash", script_path], shell=True)
+    else:
+        subprocess.Popen(["bash", script_path])
+
+def main():
+    app = QApplication(sys.argv)
+    tray = QSystemTrayIcon()
+    tray.setIcon(QIcon(ICON_PATH))
+    tray.setVisible(True)
+
+    menu = QMenu()
+
+    # 🧰 TOOL ENTRIES
+    menu.addAction(QAction("🧼 Metadata Nuker", triggered=lambda: run_script("metadata_nuker.py")))
+    menu.addAction(QAction("🔀 MAC Randomizer", triggered=lambda: run_script("randomize_mac.py")))
+    menu.addAction(QAction("🧅 OnionShare Drop", triggered=lambda: run_script("onionshare_drop.py")))
+    menu.addAction(QAction("👛 View Wallet Info", triggered=lambda: run_script("view_wallet_info.py")))
+    menu.addAction(QAction("💾 Backup Wallet", triggered=lambda: run_script("backup_wallet.py")))
+    menu.addAction(QAction("📜 Log Viewer", triggered=lambda: run_script("log_viewer.py")))
+    menu.addAction(QAction("⬆️ Self Updater", triggered=lambda: run_script("self_update.py")))
+    menu.addAction(QAction("👻 Toggle GhostDrop", triggered=lambda: run_script("ghostdrop-toggle.py")))
+
+    # 📁 UTILITIES
+    menu.addSeparator()
+    menu.addAction(QAction("🆔 Identity Switcher", triggered=lambda: run_script("identity_switcher_gui.py")))
+    menu.addAction(QAction("⚙️ GhostMode Check", triggered=lambda: run_script("ghostmode-check.sh")))
+    menu.addAction(QAction("🛠️ Fix Identities", triggered=lambda: run_script("ghost_fix_identities.sh")))
+
+    # ❌ EXIT
+    menu.addSeparator()
+    menu.addAction(QAction("❌ Exit", triggered=app.quit))
+
+    tray.setContextMenu(menu)
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()

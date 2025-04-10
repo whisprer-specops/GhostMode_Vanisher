@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Ghost Unlocker
+GenericName=GhostMode Unlock Tool
+Comment=Secure unlock and identity decryption interface
+Exec=python3 /home/$USER/ghostmode/unlock/ghost_unlocker.py
+Icon=dialog-password
+Terminal=false
+Type=Application
+Categories=Utility;Security;Unlocker;
+StartupNotify=true

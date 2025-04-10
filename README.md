@@ -20,16 +20,22 @@ It provides total Monero `.txn` lifecycle control (cold → encrypted → hot), 
 
 GhostMode_Vsnisher/
 ├── docs/
+│   ├── how_to.md
+│   └── how_to_self_inst.md
+│
 ├── .git/
 ├── src/
 ├── temp/
 ├── ulid/
 ├── ghostmode/
 │  ├── tools/
+│  │    ├── generate_temp_key.sh
+│  │    ├── ghost_dnsXtool.md
+│  │    ├── ghost_dnsXtool.sh
 │  │    ├── identity_wizard_gui.py
-│  │    ├── preview_identity_gui.py
-│  │    ├── generate_temp_key.py
+│  │    └── preview_identityp_gui.py
 │  │    └── ghostmode_tools.sh
+│  ├──────────── ghostmodeuninstall.sh
 │  ├── core/
 │  │    ├── ghostcontrol.py
 │  │    ├── ghostcontrolpanel.py
@@ -54,6 +60,7 @@ GhostMode_Vsnisher/
 │  │      ├── stego_extract.py
 │  │      └── ghost_gpg_auth_server.py
 │  ├── admin/
+│  │      ├── ghostmode.user.service
 │  │      ├── admin_dashboard.py
 │  │      ├── admin_dashboard_gui_secure.py
 │  │      ├── add_user.py
@@ -62,14 +69,14 @@ GhostMode_Vsnisher/
 │  │       ├── identikit.sh
 │  │       ├── monero_cold_wallet_wizard.sh
 │  │       ├── coldwallet_backup_to_usb.sh
-│  │       ├── generate_identity.py
+│  │       ├── !!! generate_identity.py  !!!
 │  │       ├── metadata.json
 │  │       ├── gpg-key.asc
 │  ├── dist/
-│  │     ├── ghostmode-installer.sh
 │  ├── ghostmode-uninstall.sh
+│  │     ├── ghostmode-installer.sh
 │  │     ├── GhostMode-1.2.0-x86_64.AppImage
-│  │     ├── GhostMode_1.2.0_all.deb
+│  │     ├── GhostMode_1.2.0_all.old !!!FAKE - REPLACE~ WITH
 │  │     └── secure_package.sh
 │  ├── .config/
 │  │       └── ghostmode.conf
@@ -77,13 +84,21 @@ GhostMode_Vsnisher/
 │  │       └── ghostmode.desktop
 │  └── assets/
 │        └── ghostmode.png   
+├── GhostMode_GitHub_Wiki/
+├── GhostMode_GtHUb_Wiki.zip/
 ├── LICENSE
-├── ,gitattributes
-├── ghostmodeuninstall.sh
+├── .gitattributes
+├── .gitignore
+├── GhostMode_CLI_QuickStart.md
+├── GhostMode_GUI_QuickStart.md
+├── QUICKSTART.md
+├── GhostMode_Wiki.md
 ├── workflow_wallet.offline_to_online.png
 ├── VERSION
 ├── README.md
+├── README_TOTAL.md
 ├── Dadroit JSON Generator/
+│      └── samaple.json
 └── CHANGELOG.md
 
 ---
@@ -147,7 +162,7 @@ chmod +x GhostMode-1.2.0-x86_64.AppImage
 sudo dpkg -i GhostMode_1.2.0_all.deb
 
 ## OR GUI
-./ghostmode-installer.sh
+./ghostmode-installer.sh *
 
 SECURE PACKAGE + UNLOCKER
 - secure_package.sh creates 7z-encrypted bundle per user
@@ -155,6 +170,10 @@ SECURE PACKAGE + UNLOCKER
 - unlock_guard.py detects tampering
 - ghost_unlock_server.py authenticates via Flask
 - stego_extract.py + .sig validate unlock
+
+---
+* wait!!! ar e  you strugglin'? perhaps you dumb enough to be trying to use WSL ona win system not using _LINUX_ as instructed repeatedly? then you might wanna try checking \tools  for a lil ghost_dnsXtool.sh! iut may just halp you riiiight out! :D
+---
 
 CLOUD + WIPE SYSTEM
 ghost_audit.py logs events

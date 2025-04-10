@@ -1,0 +1,52 @@
+import sys
+import subprocess
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
+from PyQt5.QtGui import QIcon
+
+class GhostControlPanel(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("👻 GHOSTMODE™ Control Panel")
+        self.setGeometry(100, 100, 600, 700)
+        self.setWindowIcon(QIcon("ghostmode/share/icons/ghostmode_256x256.ico"))
+
+        layout = QVBoxLayout()
+        label = QLabel("<b>All Ops Modules – Click To Activate</b>")
+        layout.addWidget(label)
+
+        ops = [
+            ("🧪 Identity Generator", "identity_switcher_gui.py"),
+            ("🌐 Identity Switcher GUI", "identity_switcher_gui.py"),
+            ("🌎 Admin Dashboard (Remote)", "admin_dashboard_gui_secure.py"),
+            ("🔐 GPG Login Prompt", "gpg_login_gui.py"),
+            ("📤 Upload Audit Log", "upload_audit_log.py"),
+            ("🧠 Stylometry Obfuscator", "stylometry_obfuscator.py"),
+            ("🧾 Show Unlock QR Code", "show_qr_code.py"),
+            ("🦾 MAC Address Randomizer", "mac_randomizer.py"),
+            ("💎 Metadata Nuker", "metadata_nuker.py"),
+            ("🔐 GPG Encrypt/Sign Tool", "gpg_encrypt_sign_tool.py"),
+            ("🍊 OnionShare Dropzone", "onionshare_drop.py"),
+            ("🧊 Monero Cold Wallet Wizard", "monero_wallet_wizard.py"),
+            ("🎭 Identity Rotation Manager", "identity_rotation_gui.py"),
+            ("🧠 AI Stylometry Jammer", "ai_stylometry_jammer.py"),
+        ]
+
+        for label_text, script_name in ops:
+            btn = QPushButton(label_text)
+            btn.clicked.connect(lambda checked, s=script_name: self.run_script(s))
+            layout.addWidget(btn)
+
+        self.setLayout(layout)
+
+    def run_script(self, script_name):
+        try:
+            subprocess.Popen(["python", f"ghostmode/core/{script_name}"], shell=True)
+        except Exception as e:
+            print(f"Error running {script_name}: {e}")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = GhostControlPanel()
+    window.show()
+    sys.exit(app.exec_())

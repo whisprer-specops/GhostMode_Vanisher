@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=GhostMode
+GenericName=GhostMode Launcher
+Comment=Cold-sign and hot-broadcast Monero transactions securely
+Exec=ghostcontrol.py
+Icon=ghostmode
+Terminal=false
+Type=Application
+Categories=Utility;Security;Privacy;

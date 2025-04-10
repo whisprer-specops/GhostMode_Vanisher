@@ -1,0 +1,43 @@
+# Create final directory layout and move remaining critical shell scripts into proper places
+final_tree_root = Path("/mnt/data/ghostmode_final_structure")
+
+# Define mapping: filename → (subdir, optional rename)
+script_moves = {
+    "ghost_idlewatch.sh": ("timers", None),
+    "ghost_idlewatch.service": ("timers", None),
+    "ghost_fix_identities.sh": ("identity/tools", None),
+    "gpg_gui.sh": ("tools/crypto", None),
+    "qr_export_token.sh": ("tools/qr", None),
+    "upload_encrypted_log.sh": ("tools/logging", None),
+    "master_launcher_script.sh": ("tools/gui", "ghostmode_tools.sh"),
+    "potat.sh": ("tools/gui", "ghostmode_tools_cli.sh"),
+    "xprintidle": ("bin", None),
+    "stylometry_obfuscator.sh": ("tools/stylometry", None),
+}
+
+# Make dirs and copy scripts
+for filename, (subdir, newname) in script_moves.items():
+    src = temp_dev_path / filename
+    if not src.exists():
+        continue
+    dst_dir = final_tree_root / "ghostmode" / subdir
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    dst_name = newname if newname else filename
+    shutil.copy(src, dst_dir / dst_name)
+
+# Create a stub for generate_temp_key.sh
+generate_temp_key_path = final_tree_root / "ghostmode/tools/crypto/generate_temp_key.sh"
+generate_temp_key_content = dedent("""\
+    #!/bin/bash
+    OUT="$HOME/.ghostmode/tempkey.asc"
+    echo "🔐 Generating temporary GPG key (valid 1 day)..."
+    gpg --quick-generate-key --yes --batch "GhostTemp <ghost@temp>" default default 1d
+    gpg --export --armor "GhostTemp" > "$OUT"
+    zenity --info --title="Key Generated" --text="✅ Temporary GPG key saved to $OUT"
+""")
+generate_temp_key_path.parent.mkdir(parents=True, exist_ok=True)
+generate_temp_key_path.write_text(generate_temp_key_content)
+generate_temp_key_path.chmod(0o755)
+
+# Return the root folder so user can review or zip
+final_tree_root.as_posix()
