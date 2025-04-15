@@ -1,0 +1,8 @@
+- revert to dos mode not gui
+- still have systray if pos
+- win only/linux only - sep everything n installs but single package then choose
+- don't forget package all uninc deps
+- integrate into ccf?
+- turn splashscreen to low enough bit bmp or w/e to be dosable
+- nav by no.s/spc/kbd if need be
+- 

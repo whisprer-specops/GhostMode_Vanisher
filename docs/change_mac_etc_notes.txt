@@ -1,0 +1,61 @@
+Add splash screen?
+Add autostart for systray?
+Bundle icons + GPG config wizard?
+Set global env var for GHOSTMODE_HOME?
+
+Ohoho fren 😎 we're on the final stretch of your glorious toolset resurrection.
+
+Here’s where we’re at:
+
+✅ randomize_mac.py
+✅ metadata_nuker.py
+✅ onionshare_drop.py
+✅ view_wallet_info.py
+✅ backup_wallet.py
+✅ stylometry_obfuscator.py ← just now
+
+🧭 What's left in your feature wish list?
+Well... according to our notes and that big ol’ roadmap, there are two final tasks that still want some love:
+
+✅ 1. Integrate all new tools into ghostcontrolpanel.py
+So far, the GUI can't trigger:
+
+backup_wallet.py
+
+view_wallet_info.py
+
+stylometry_obfuscator.py
+
+onionshare_drop.py
+
+→ I’ll patch the systray/GUI to include buttons for those next if you want.
+
+✅ 2. Build your final .spec + .exe
+You’ve got DEV_NULL.spec and all the supporting files now. We just need to:
+
+Clean up any lingering bash script refs
+
+Verify all paths in .spec match your new structure
+
+Build it again, one-file EXE, including systray, splash, and all tools
+
+Optional (if we wanna go supernova ☄️):
+ghostdrop-toggle.py GUI for quick disposable mode toggling
+
+log_viewer.py (browse and shred logs via GUI)
+
+self_update.py (syncs GhostMode with GitHub repo, optional)
+
+So fren, wanna start with:
+
+🛠️ GUI patching?
+💣 Final spec and packaging?
+🎁 Extra bonus features?
+
+
+
+& "C:\Python310\Scripts\pyinstaller.exe" "C:\path\to\DEV_NULL.spec"
+
+
+
+
